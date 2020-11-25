@@ -1,3 +1,3 @@
 # utils
-collection of various code
-contains rejected code from previous projects, that may be useful for future use.
+collection of various code snippets
+contains code from previous projects and solutions to encountered problems with JS, that may be useful for future use.
