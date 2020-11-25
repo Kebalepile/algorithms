@@ -5,9 +5,12 @@
  */
  
 const TitleCase = (str) => {
-    str = str.toLowerCase()
-    let s1 = str.slice(0,1),
-     s2 = str.slice(1),
-      newStr = s1.toUpperCase().concat(s2)
-  return newStr
+  	let newStr = '';
+	if (typeof str === 'string') {
+		str = str.toLowerCase();
+		let s1 = str.slice(0, 1),
+			s2 = str.slice(1);
+		newStr = s1.toUpperCase().concat(s2);
+	}
+	return newStr;
 }
