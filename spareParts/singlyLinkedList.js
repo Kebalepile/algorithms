@@ -72,3 +72,79 @@ lList.AddNode(new Node(`meaning of life is 42.`));
 lList.Insert(new Node('Lebogang'), 4);
 lList.DisplayAllNodes();
 console.log(lList.Length());
+// with ES5 class syntax
+class Node {
+	constructor(data) {
+		this.data = data;
+		this.next = null;
+	}
+}
+
+class LinkList {
+	constructor() {
+		this.head = null;
+		this.length = 0;
+	}
+
+	GetLength() {
+		return this.length;
+	}
+	DisplayNodes() {
+		let curNode = this.head;
+		while (curNode !== null) {
+			console.log('-------------start----------\n', curNode, '\n---------------end-----------------');
+			curNode = curNode.next;
+		}
+	}
+	AddNode(node) {
+		if (this.head == null) {
+			this.head = node;
+		} else {
+			let curNode = this.head,
+				prevNode;
+
+			while (curNode !== null) {
+				prevNode = curNode;
+				curNode = curNode.next;
+			}
+
+			prevNode.next = node;
+		}
+
+		this.length += 1;
+	}
+	InsertNode(node, index) {
+		if (index < 0 || index > this.GetLength() || this.GetLength() === 0) {
+			console.log(`index => ${index}, is out of range.`);
+			return;
+		}
+		let curNode = this.head,
+			prevNode,
+			count = 0;
+		while (index !== count) {
+			prevNode = curNode;
+			curNode = curNode.next;
+			count += 1;
+		}
+
+		if (prevNode === undefined) {
+			node.next = curNode;
+			this.head = node;
+		} else {
+			node.next = curNode;
+			prevNode.next = node;
+		}
+
+		this.length += 1;
+	}
+}
+
+const llist = new LinkList();
+
+llist.AddNode(new Node('Dec'));
+llist.InsertNode(new Node('Jan'), 0);
+llist.AddNode(new Node('Feb'));
+llist.InsertNode(new Node('March'), 2);
+llist.InsertNode(new Node('April'), 4)
+llist.DisplayNodes();
+console.log(llist.GetLength());
