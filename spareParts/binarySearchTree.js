@@ -16,150 +16,131 @@ class Node {
 }
 
 class BST {
-	constructor() {
-		this.root = null;
-	}
+	#root = null;
 	insert(data) {
-		const root = this.root;
-		if (!root) {
-			this.root = new Node(data);
+		let node = this.#root;
+		if (!node) {
+			this.#root = new Node(data);
 			return;
-		} else {
-			const searchTree = (node, data) => {
-				if (data < node.data) {
-					if (!node.l) {
-						node.l = new Node(data);
-						return;
-					} else {
-						return searchTree(node.l, data);
-					}
-				} else if (data > node.data) {
-					if (!node.r) {
-						node.r = new Node(data);
-						return;
-					} else {
-						return searchTree(node.r, data);
-					}
-				} else {
-					return 'data already in BST.';
+		}
+
+		const searchTree = (node, data) => {
+			if (data < node.data) {
+				if (!node.l) {
+					node.l = new Node(data);
+					return;
 				}
-			};
-			return searchTree(root, data);
-		}
+				return searchTree(node.l, data);
+			} else if (data > node.data) {
+				if (!node.r) {
+					node.r = new Node(data);
+					return;
+				}
+				return searchTree(node.r, data);
+			} else {
+				return 'data is already in BST.';
+			}
+		};
+
+		return searchTree(node, data);
 	}
-
-	min() {
-		let curNode = this.root;
-
-		while (curNode.l) {
-			curNode = curNode.l;
-		}
-
-		return curNode.data;
-	}
-
-	max() {
-		let curNode = this.root;
-		while (curNode.r) {
-			curNode = curNode.r;
-		}
-
-		return curNode.data;
-	}
-	/**
-	 *
-	 * @param {Element} data
-	 * @description default search
-	 */
-	search(data) {
-		let curNode = this.root;
-		while (curNode.data !== data) {
-			if (data < curNode.data) {
-				curNode = curNode.l;
-			} else if (data > curNode.data) {
-				curNode = curNode.r;
+	has(data) {
+		let node = this.#root;
+		while (node.data !== data) {
+			if (data < node.data) {
+				node = node.l;
+			} else if (data > node.data) {
+				node = node.r;
 			}
 
-			if (curNode === null) {
-				return 'No node with such data in tree.';
-			}
-		}
-
-		return curNode;
-	}
-
-	contains(data) {
-		let curNode = this.root;
-		while (curNode.data !== data) {
-			if (data < curNode.data) {
-				curNode = curNode.l;
-			} else if (data > curNode.data) {
-				curNode = curNode.r;
-			}
-
-			if (curNode === null) {
+			if (!node) {
 				return false;
 			}
 		}
 
-		return curNode.data === data ? true : false;
+		return true;
 	}
-
-	remove(data) {
-		// helper function.
-		const rmNode = (node, data) => {
-			if (node === null) {
-				//  empty tree
-				return null;
+	get(data) {
+		let node = this.#root;
+		while (node.data !== data) {
+			if (data < node.data) {
+				node = node.l;
+			} else if (data > node.data) {
+				node = node.r;
 			}
 
+			if (!node) {
+				return 'No such data in BST.';
+			}
+		}
+
+		return node.data;
+	}
+	del(data) {
+		const delNode = (node, data) => {
+			if (!node) {
+				return null;
+			}
 			if (data < node.data) {
-				node.l = rmNode(node.l, data);
+				node.l = delNode(node.l, data);
 				return node;
 			} else if (data > node.data) {
-				node.r = rmNode(node.r, data);
+				node.r = delNode(node.r, data);
 				return node;
 			} else {
-				//No children.
-				// dealing with a leaf node.
-				// both node.l && node.r contain Null.
-				if (node.l === node.r) {
+				// (leaflet) node with no children.
+				if (node.l === null && node.r === null) {
 					node = null;
 					return node;
 				}
 
-				// has one child cases.
-				if (node.l === null) {
-					return node.r;
-				}
-				if (node.r === null) {
-					return node.l;
+				// node has one child cases.
+				if (!node.r) {
+					node = node.l;
+					return node;
 				}
 
-				// has both children cases.
-				// looking for a successor.
-				let curNode = node.r;
-				while (curNode.l) {
-					curNode = curNode.l;
+				if (!node.l) {
+					node = node.r;
+					return node;
 				}
 
-				node.data = curNode.data;
-				// delete value from subtree.
-				node.r = rmNode(node.r, curNode.data);
+				// has both children.
+				if (node.l && node.r) {
+					let tempNode = node.r;
+					while (tempNode.l) {
+						tempNode = tempNode.l;
+					}
 
-				return node;
+					node.data = tempNode.data;
+					// delete value from subtree.
+					node.r = delNode(node.r, tempNode.data);
+					return node;
+				}
 			}
 		};
 
-		this.root = rmNode(this.root, data);
+		this.#root = delNode(this.#root, data);
 	}
+	min() {
+		let node = this.#root;
+		while (node.l) {
+			node = node.l;
+		}
 
-	isBalanced() {
-		return this.minHeight() >= this.maxHeight() - 1;
+		return node.data;
 	}
+	max() {
+		let node = this.#root;
 
-	minHeight(node = this.root) {
-		if (node === null) {
+		while (node.r) {
+			node = node.r;
+		}
+
+		return node.data;
+	}
+	minHeight(node = this.#root) {
+		if (!node) {
 			return -1;
 		}
 
@@ -172,11 +153,11 @@ class BST {
 			return right + 1;
 		}
 	}
-
-	maxHeight(node = this.root) {
-		if (node === null) {
+	maxHeight(node = this.#root) {
+		if (!node) {
 			return -1;
 		}
+
 		let left = this.maxHeight(node.l),
 			right = this.maxHeight(node.r);
 
@@ -186,31 +167,31 @@ class BST {
 			return right + 1;
 		}
 	}
-
-	// tree travels methods.
-	// starts at left -> root -> right.
-	inorder() {
-		const result = [],
+	isBalanced() {
+		return this.minHeight() >= this.maxHeight() - 1;
+	}
+	// traversal methods, use recursion helpers.
+	// left -> root -> right.
+	inOrder() {
+		let results = [],
 			traverse = (node) => {
 				if (node.l) {
 					traverse(node.l);
 				}
-				result.push(node.data);
+				results.push(node.data);
 				if (node.r) {
 					traverse(node.r);
 				}
 			};
 
-		traverse(this.root);
-
-		return result;
+		traverse(this.#root);
+		return results;
 	}
-
-	// starts at root -> left -> right.
+	// root -> left -> right.
 	preOrder() {
-		const result = [],
+		let results = [],
 			traverse = (node) => {
-				result.push(node.data);
+				results.push(node.data);
 				if (node.l) {
 					traverse(node.l);
 				}
@@ -218,14 +199,13 @@ class BST {
 					traverse(node.r);
 				}
 			};
+		traverse(this.#root);
 
-		traverse(this.root);
-		return result;
+		return results;
 	}
-
-	// starts at left -> right -> root.
+	// left -> right -> root.
 	postOrder() {
-		const result = [],
+		let results = [],
 			traverse = (node) => {
 				if (node.l) {
 					traverse(node.l);
@@ -234,22 +214,21 @@ class BST {
 				if (node.r) {
 					traverse(node.r);
 				}
-
-				result.push(node.data);
+				results.push(node.data);
 			};
+		traverse(this.#root);
 
-		traverse(this.root);
-		return result;
+		return results;
 	}
-
+	// use while loop.
 	levelOrder() {
-		const result = [],
+		let results = [],
 			q = [];
-		if (this.root) {
-			q.push(this.root);
+		if (this.#root) {
+			q.push(this.#root);
 			while (q.length) {
 				let node = q.shift();
-				result.push(node.data);
+				results.push(node.data);
 				if (node.l) {
 					q.push(node.l);
 				}
@@ -257,38 +236,40 @@ class BST {
 					q.push(node.r);
 				}
 			}
-			return result;
+			return results;
 		}
-
 		return null;
 	}
 }
 
 const tree = new BST();
-tree.insert(9);
-tree.insert(4);
-tree.insert(17);
-tree.insert(3);
-tree.insert(6);
-tree.insert(22);
-tree.insert(5);
-tree.insert(7);
-tree.insert(20);
-console.log(tree.insert(10));
-console.log(tree.min());
-console.log(tree.max());
-console.log(tree.contains(4));
-console.log(tree.contains(5));
-console.group(tree.search(1));
-console.log(tree.search(7));
-// tree.remove(1);
-console.log(tree.contains(1));
-console.group(tree.search(3));
 
-console.log(tree.minHeight());
-console.log(tree.maxHeight());
-console.log(tree.isBalanced());
-console.log(tree.inorder());
+console.log(tree.insert(9));
+console.log(tree.insert(4));
+console.log(tree.insert(17));
+console.log(tree.insert(12));
+console.log(tree.insert(3));
+console.log(tree.insert(6));
+console.log(tree.insert(22));
+console.log(tree.insert(5));
+console.log(tree.insert(7));
+console.log(tree.insert(20));
+console.log(tree.insert(10));
+console.log(tree.has(9));
+console.log(tree.has(6));
+console.log(tree.get(4), ' <-- data retrived from BST.');
+console.log(tree.get(45));
+console.log(tree.min(), ' <--- min value in BST.');
+console.log(tree.max(), ' <---- max value in BST.');
+console.log('min heighth is --> ', tree.minHeight());
+console.log('max heighth is --> ', tree.maxHeight());
+console.log(`tree is ${tree.isBalanced() ? 'balanced' : 'not balanced'}.`);
+tree.del(4);
+console.log(tree.get(4), ' <-- data retrived from BST.');
+tree.del(17);
+console.log(tree.get(17), ' <-- data retrived from BST.');
+console.log(`tree is ${tree.isBalanced() ? 'balanced' : 'not balanced'}.`);
+console.log(tree.inOrder());
 console.log(tree.preOrder());
 console.log(tree.postOrder());
 console.log(tree.levelOrder());
