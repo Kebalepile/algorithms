@@ -23,9 +23,9 @@ translator.prototype.translate = function (lang) {
 	}
 };
 translator.prototype.bind = function (thisObj) {
-	const fn = this;
+	const constructorFunc = this;
 	return function (lang) {
-		fn.translate.call(thisObj, lang);
+		constructorFunc.translate.call(thisObj, lang);
 	
 	};
 };
