@@ -6,9 +6,6 @@ const obj = {
                }
              };
 const clone = JSON.parse(JSON.stringify(obj));
-
 clone.a.b.c = "hello";
-
 console.log(obj.a.b.c);
-
 console.log(clone.a.b.c);
