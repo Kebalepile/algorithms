@@ -26,7 +26,6 @@ translator.prototype.bind = function (thisObj) {
 	const constructorFunc = this;
 	return function (lang) {
 		constructorFunc.translate.call(thisObj, lang);
-	
 	};
 };
 const jim = new translator();
