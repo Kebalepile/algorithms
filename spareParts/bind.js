@@ -1,5 +1,5 @@
 // Implementation of the Function.prototype.bind method.
-
+'use strict';
 const person = {
 	name: 'Rick',
 	speak() {
@@ -7,7 +7,9 @@ const person = {
 	},
 };
 
-function translate(lang) {
+function translator() {}
+
+translator.prototype.translate = function (lang) {
 	switch (lang) {
 		case 'Setswana':
 			console.log('Dumela ke nna  ', this.name);
@@ -19,18 +21,17 @@ function translate(lang) {
 			this.speak();
 			break;
 	}
-}
-
-translate.prototype.bind = function (thisObj) {
-	const that = this;
+};
+translator.prototype.bind = function (thisObj) {
+	const fn = this;
 	return function (lang) {
-		that.call(lang);
+		fn.translate.call(thisObj, lang);
+	
 	};
 };
+const jim = new translator();
+const jimTranslates = jim.bind(person);
 
-const activate = translate.bind(person);
-
-
-activate('Setswana');
-activate('Zulu');
-activate();
+jimTranslates('Setswana');
+jimTranslates('Zulu');
+jimTranslates();
