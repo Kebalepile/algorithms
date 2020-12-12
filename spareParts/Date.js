@@ -3,9 +3,7 @@ export function date () {
     dateObject = new Date(timeStamp),
     date = dateObject.getDate(),
     month = dateObject.getMonth() + 1,
-    year = dateObject.getFullYear(),
-    hours = 12 - (12 - dateObject.getHours()),
-    minutes = dateObject.getMinutes()
+    year = dateObject.getFullYear();
 
     return `${year}/${month}/${date}`
 }
