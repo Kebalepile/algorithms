@@ -1,5 +1,4 @@
-let k = 3,
-	t = 5;
+
 /**
  *
  * @param {Number} nToys
@@ -9,19 +8,22 @@ let k = 3,
  * end with.
  * @returns number assigned to last kid.
  */
-function shareToys(nToys, nKids) {
-	let lastK = 1;
-
-	while (nToys !== 0) {
-		if (lastK > nKids) {
-			lastK = 1;
+function shareToys(nKids, nToys) {
+	let lastKid = nKids - Math.round(nKids / nToys);
+	while (nToys) {
+		if (lastKid >= nKids) {
+			lastKid = 1;
 		} else {
-			lastK += 1;
+			lastKid++;
 		}
-		nToys -= 1;
+		nToys--;
 	}
 
-	return lastK;
+	return lastKid;
 }
 
-console.log(shareToys(t, k));
+
+let nOfKids = 10,
+	nOfToys = 3;
+console.log('last kid to play will be kid number ', shareToys(nOfKids, nOfToys));
+
